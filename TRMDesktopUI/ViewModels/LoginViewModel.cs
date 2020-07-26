@@ -47,7 +47,35 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        // Enable Log In button only if UserName and Password fields are not empty
+        public bool IsErrorVisible
+        {
+            get
+            {
+                bool output = false;
+
+                if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                {
+                    output = true;
+                }
+
+                return output;
+            }
+        }
+
+        private string _errorMessage;
+
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                NotifyOfPropertyChange(() => IsErrorVisible);
+                NotifyOfPropertyChange(() => ErrorMessage);
+            }
+        }
+
+        // Enable LogIn button only if UserName and Password fields are not empty
         public bool CanLogIn => (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password));
 
         /// <summary>
@@ -58,14 +86,16 @@ namespace TRMDesktopUI.ViewModels
         {
             try
             {
+                ErrorMessage = "";
+
                 var result = await _apiHelper.Authenticate(UserName, Password);
 
-                Console.WriteLine($"Access_Token: {result.Access_Token}");
-                Console.WriteLine($"UserName: {result.UserName}");
+                // Capture more information about the user
+                await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                ErrorMessage = ex.Message;
             }
         }
     }

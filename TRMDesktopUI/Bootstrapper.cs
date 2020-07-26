@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TRMDesktopUI.Helpers;
+using TRMDesktopUI.Library.Models;
 using TRMDesktopUI.ViewModels;
 
 namespace TRMDesktopUI
@@ -34,7 +35,8 @@ namespace TRMDesktopUI
 
                 // pass event messaging throughout application
                 .Singleton<IEventAggregator, EventAggregator>()
-                .Singleton<IAPIHelper, APIHelper>();
+                .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IAPIHelper, Library.Api.APIHelper>();
 
             GetType().Assembly.GetTypes()
                 .Where(type => type.IsClass)
