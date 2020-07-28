@@ -78,7 +78,7 @@ namespace TRMDesktopUI.Library.Api
             // adds bearer token to the header
             apiClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
 
-            // communicates with the api to 
+            // communicates with the api to get the logged in user info
             using (HttpResponseMessage response = await apiClient.GetAsync("/api/User"))
             {
                 if (response.IsSuccessStatusCode)
