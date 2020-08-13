@@ -1,18 +1,42 @@
 ﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using TRMDesktopUI.Library.Api;
+using TRMDesktopUI.Library.Models;
 
 namespace TRMDesktopUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-        private BindingList<string> _products;
+        private IProductEndpoint _productEndpoint;
+        private BindingList<ProductModel> _products;
+        private BindingList<ProductModel> _cart;
 
-        public BindingList<string> Products
+        public SalesViewModel(IProductEndpoint productEndpoint)
+        {
+            _productEndpoint = productEndpoint;
+        }
+
+        // When this event triggers..
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+
+            // ..we are loading the products
+            await LoadProducts();
+        }
+
+        // This function loads the products asynchronous in the binding product list
+        private async Task LoadProducts()
+        {
+            // Fetch the products with an async call to the API
+            var productList = await _productEndpoint.GetAll();
+
+            // Put the products in the Products list
+            Products = new BindingList<ProductModel>(productList);
+        }
+
+        public BindingList<ProductModel> Products
         {
             get { return _products; }
             set
@@ -22,9 +46,7 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        private BindingList<string> _cart;
-
-        public BindingList<string> Cart
+        public BindingList<ProductModel> Cart
         {
             get { return _cart; }
             set
@@ -34,9 +56,9 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        private string _itemQuantity;
+        private int _itemQuantity;
 
-        public string ItemQuantity
+        public int ItemQuantity
         {
             get { return _itemQuantity; }
             set

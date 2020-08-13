@@ -2,11 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TRMDesktopUI.Helpers;
+using TRMDesktopUI.Library.Api;
 using TRMDesktopUI.Library.Models;
 using TRMDesktopUI.ViewModels;
 
@@ -28,13 +27,15 @@ namespace TRMDesktopUI
 
         protected override void Configure()
         {
-            _container.Instance(_container);
+            _container.Instance(_container)
+                .PerRequest<IProductEndpoint, ProductEndpoint>();
 
             _container
                 .Singleton<IWindowManager, WindowManager>()
 
                 // pass event messaging throughout application
                 .Singleton<IEventAggregator, EventAggregator>()
+
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
                 .Singleton<IAPIHelper, Library.Api.APIHelper>();
 

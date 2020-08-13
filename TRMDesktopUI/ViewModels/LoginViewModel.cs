@@ -1,9 +1,7 @@
 ﻿using Caliburn.Micro;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using TRMDesktopUI.EventModels;
 using TRMDesktopUI.Helpers;
 
 namespace TRMDesktopUI.ViewModels
@@ -13,10 +11,12 @@ namespace TRMDesktopUI.ViewModels
         private string _userName;
         private string _password;
         private IAPIHelper _apiHelper;
+        private IEventAggregator _events;
 
-        public LoginViewModel(IAPIHelper apiHelper)
+        public LoginViewModel(IAPIHelper apiHelper, IEventAggregator events)
         {
             _apiHelper = apiHelper;
+            _events = events;
         }
 
         /// <summary>
@@ -79,19 +79,24 @@ namespace TRMDesktopUI.ViewModels
         public bool CanLogIn => (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password));
 
         /// <summary>
-        /// authenticates the User
+        /// Authenticates the User
         /// </summary>
         /// <returns> Access_Token, UserName </returns>
         public async Task LogIn()
         {
             try
             {
+                // Resets the ErrorMessage to an empty string
                 ErrorMessage = "";
 
+                // User authentication
                 var result = await _apiHelper.Authenticate(UserName, Password);
 
                 // Capture more information about the user
                 await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
+
+                // Publishing an event on UIThread
+                _events.PublishOnUIThread(new LogOnEvent());
             }
             catch (Exception ex)
             {
