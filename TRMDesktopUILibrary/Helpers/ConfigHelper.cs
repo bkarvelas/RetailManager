@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TRMDesktopUI.Library.Helpers
 {
@@ -13,14 +9,14 @@ namespace TRMDesktopUI.Library.Helpers
         {
             string rateText = ConfigurationManager.AppSettings["taxRate"];
 
-            bool IsValidTaxRate = Decimal.TryParse(rateText, out decimal output);
+            bool IsValidTaxRate = Decimal.TryParse(rateText, out decimal parseResult);
 
             if (IsValidTaxRate == false)
             {
                 throw new ConfigurationErrorsException("The tax rate is not set up properly");
             }
 
-            return output;
+            return parseResult;
         }
     }
 }
