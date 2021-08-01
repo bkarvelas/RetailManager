@@ -1,2 +1,2 @@
-# TimCo Retail Manager
-A retail management system
+# Retail Manager
+Retail management system
